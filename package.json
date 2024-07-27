@@ -40,7 +40,7 @@
 		"svelte-preprocess"
 	],
 	"dependencies": {
-		"@tanstack/svelte-query": "https://pkg.pr.new/@tanstack/svelte-query@4e3325e",
+		"@tanstack/svelte-query": "https://pkg.pr.new/@tanstack/svelte-query@80a675e",
 		"lucide-svelte": "^0.414.0"
 	}
 }
