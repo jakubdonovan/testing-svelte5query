@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { fetchAddressSuggestions } from '$lib/hooks/fetchAddressSuggestions';
+	import { fetchAddressSuggestions } from '$lib/hooks/fetchAddressSuggestions.svelte';
 	// 164 Ludlow St New York, NY, USA
-	let address = '';
-	let addressSuggestions = fetchAddressSuggestions(address);
-	let selectedAddress = '';
+	let address = $state('');
+	let selectedAddress = $state('');
+	let addressSuggestions = fetchAddressSuggestions(() => address);
 
 	// when address selected from suggestions, suggestions should be cleared to de-render suggestions popup.
 	async function selectAddress(index: number) {
@@ -37,7 +37,7 @@
 	{#if addressSuggestions.isSuccess}
 		<ul>
 			{#each addressSuggestions.data as suggestion, index}
-				<li><button on:click={() => selectAddress(index)}>{suggestion}</button></li>
+				<li><button onclick={() => selectAddress(index)}>{suggestion}</button></li>
 			{/each}
 		</ul>
 	{/if}
