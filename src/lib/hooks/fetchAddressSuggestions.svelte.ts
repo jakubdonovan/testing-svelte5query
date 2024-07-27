@@ -1,7 +1,7 @@
 import { createQuery } from '@tanstack/svelte-query';
 
-export const fetchAddressSuggestions = (address: string) => {
-	return createQuery<string[]>({
+export const fetchAddressSuggestions = (address: () => string) => {
+	return createQuery<string[]>(() => ({
 		queryKey: ['addressSuggestions', address],
 		queryFn: async () => {
 			const res = await fetch(`/api/search-address?address=${address}`);
@@ -11,5 +11,5 @@ export const fetchAddressSuggestions = (address: string) => {
 		},
 		enabled: !!address,
 		initialData: []
-	});
+	}));
 };
