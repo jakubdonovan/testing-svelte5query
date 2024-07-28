@@ -1,22 +1,28 @@
 <script lang="ts">
 	import { fetchAddressSuggestions } from '$lib/hooks/fetchAddressSuggestions.svelte';
-	// 164 Ludlow St New York, NY, USA
+	import { useQueryClient } from '@tanstack/svelte-query';
+
 	let address = $state('');
 	let selectedAddress = $state<string | null>(null);
-
 	let addressSuggestions = fetchAddressSuggestions(() => address);
+
+	const client = useQueryClient();
 
 	async function selectAddress(index: number) {
 		if (!addressSuggestions.data) return;
 		selectedAddress = addressSuggestions.data[index];
+		address = '';
 
 		return selectedAddress;
 	}
+	function handleChange() {
+		address = '';
+		selectedAddress = null;
+		client.invalidateQueries({ queryKey: ['addressSuggestions'] });
+	}
 
 	$inspect({
-		address,
-		isFetching: addressSuggestions.isFetching,
-		data: addressSuggestions.data
+		addressSuggestions
 	});
 </script>
 
@@ -25,7 +31,7 @@
 	{#if !selectedAddress}
 		<input type="text" bind:value={address} placeholder="Enter delivery address" />
 	{/if}
-	{#if addressSuggestions.isFetching || addressSuggestions.isPending}
+	{#if addressSuggestions.isFetching}
 		Loading...
 	{/if}
 	{#if addressSuggestions.error}
@@ -42,7 +48,7 @@
 	{#if selectedAddress}
 		<div>
 			<p>{selectedAddress}</p>
-			<button onclick={() => (selectedAddress = null)}>change</button>
+			<button onclick={handleChange}>change</button>
 		</div>
 	{/if}
 </div>
