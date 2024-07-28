@@ -22,14 +22,7 @@
 	let selectedAddress = $state<string | null>(null);
 	let addressSuggestions = fetchAddressSuggestions(() => address);
 
-	const handleSelectAddress = (
-		index: number,
-		addressSuggestions: DefinedCreateQueryResult<string[], Error>,
-		address: string,
-		selectedAddress: string | null,
-		client: QueryClient
-	): string => {
-		console.log('triggered handleSelectAddress');
+	const handleSelectAddress = (index: number): string => {
 		address = '';
 		selectedAddress = addressSuggestions.data[index];
 		client.invalidateQueries({ queryKey: ['addressSuggestions'] });
@@ -37,33 +30,24 @@
 		return selectedAddress;
 	};
 
-	const handleClearAddress = (
-		client: QueryClient,
-		address: string,
-		selectedAddress: string | null
-	) => {
-		console.log('triggered handleClearAddress');
+	const handleClearAddress = () => {
 		address = '';
 		selectedAddress = null;
 		client.invalidateQueries({ queryKey: ['addressSuggestions'] });
-
-		return selectedAddress;
 	};
-
-	$inspect(address, selectedAddress);
 
 	// let selectedRestaurant: RestaurantListOption = $state(DEFAULT_RESTAURANT_NAME);
 	// let restaurantOutlets = fetchRestaurantOutlets(
 	// 	() => selectedRestaurant,
 	// 	() => selectedAddress ?? ''
 	// );
+	$inspect(addressSuggestions);
 </script>
 
 <AddressInput
-	{client}
 	bind:address
 	bind:selectedAddress
-	bind:addressSuggestions
+	{addressSuggestions}
 	onSelectAddress={handleSelectAddress}
 	onClearAddress={handleClearAddress}
 />

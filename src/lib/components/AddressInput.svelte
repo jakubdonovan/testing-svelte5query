@@ -1,23 +1,15 @@
 <script lang="ts">
-	import type { DefinedCreateQueryResult, QueryClient } from '@tanstack/svelte-query';
+	import type { DefinedCreateQueryResult } from '@tanstack/svelte-query';
 
 	type Props = {
-		client: QueryClient;
 		address: string;
 		addressSuggestions: DefinedCreateQueryResult<string[], Error>;
 		selectedAddress: string | null;
-		onSelectAddress: (
-			index: number,
-			addressSuggestions: DefinedCreateQueryResult<string[], Error>,
-			address: string,
-			selectedAddress: string | null,
-			client: QueryClient
-		) => string;
-		onClearAddress: (client: QueryClient, address: string, selectedAddress: string | null) => void;
+		onSelectAddress: (index: number) => string;
+		onClearAddress: () => void;
 	};
 
 	let {
-		client,
 		address = $bindable(),
 		addressSuggestions = $bindable(),
 		selectedAddress = $bindable(),
@@ -41,11 +33,7 @@
 		<ul class="text-gray-500">
 			{#each addressSuggestions.data as suggestion, index}
 				<li>
-					<button
-						onclick={() =>
-							onSelectAddress(index, addressSuggestions, address, selectedAddress, client)}
-						>{suggestion}</button
-					>
+					<button onclick={() => onSelectAddress(index)}>{suggestion}</button>
 				</li>
 			{/each}
 		</ul>
@@ -54,7 +42,7 @@
 	{#if selectedAddress}
 		<div>
 			<p>{selectedAddress}</p>
-			<button onclick={() => onClearAddress(client, address, selectedAddress)}>change</button>
+			<button onclick={onClearAddress}>change</button>
 		</div>
 	{/if}
 </div>
