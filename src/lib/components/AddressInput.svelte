@@ -4,11 +4,11 @@
 	type Props = {
 		client: QueryClient;
 		address: string;
-		addressSuggestions: DefinedCreateQueryResult<string[]>;
+		addressSuggestions: DefinedCreateQueryResult<string[], Error>;
 		selectedAddress: string | null;
 		onSelectAddress: (
 			index: number,
-			addressSuggestions: DefinedCreateQueryResult<string[]>,
+			addressSuggestions: DefinedCreateQueryResult<string[], Error>,
 			address: string,
 			selectedAddress: string | null,
 			client: QueryClient

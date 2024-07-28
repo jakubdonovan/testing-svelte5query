@@ -24,11 +24,11 @@
 
 	const handleSelectAddress = (
 		index: number,
-		addressSuggestions: DefinedCreateQueryResult<string[]>,
+		addressSuggestions: DefinedCreateQueryResult<string[], Error>,
 		address: string,
 		selectedAddress: string | null,
 		client: QueryClient
-	) => {
+	): string => {
 		console.log('triggered handleSelectAddress');
 		address = '';
 		selectedAddress = addressSuggestions.data[index];
@@ -64,8 +64,8 @@
 	bind:address
 	bind:selectedAddress
 	bind:addressSuggestions
-	onClearAddress={handleClearAddress}
 	onSelectAddress={handleSelectAddress}
+	onClearAddress={handleClearAddress}
 />
 
 <!-- <div class="space-y-8 p-4"> -->
