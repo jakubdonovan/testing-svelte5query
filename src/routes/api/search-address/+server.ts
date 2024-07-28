@@ -3,7 +3,6 @@ import { fetchAddressSuggestionsWorker } from '$workers/searchAddressSuggestions
 /** @type {import('./$types').RequestHandler} */
 export const GET = async ({ url }: { url: URL }) => {
 	const address = url.searchParams.get('address');
-	if (!address) return new Response('Address is required', { status: 400 });
 
 	try {
 		const suggestions = await fetchAddressSuggestionsWorker(address);

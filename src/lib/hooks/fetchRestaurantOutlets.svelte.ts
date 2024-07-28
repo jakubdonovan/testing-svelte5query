@@ -5,16 +5,16 @@ export const fetchRestaurantOutlets = (restaurantName: () => string, address: ()
 	return createQuery<Restaurant[]>(() => ({
 		queryKey: ['fetchRestaurantOutlets', restaurantName(), address()],
 		queryFn: async () => {
-			const response = await fetch(`/api/search-restaurant`, {
+			const res = await fetch(`/api/search-restaurant`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ address: address(), restaurantName: restaurantName() })
 			});
-			if (!response.ok) throw new Error('Failed to fetch restaurants');
+			if (!res.ok) throw new Error('Failed to fetch restaurants');
 
-			return await response.json();
+			return await res.json();
 		},
-		enabled: !!address(),
+		enabled: false,
 		initialData: []
 	}));
 };

@@ -1,6 +1,8 @@
 import { chromium } from 'playwright';
 
 export async function fetchAddressSuggestionsWorker(address: string) {
+	if (!address) throw new Error('Address is required.');
+
 	const browser = await chromium.launch({ headless: true });
 	const page = await browser.newPage();
 

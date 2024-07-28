@@ -2,8 +2,10 @@
 	import { fetchAddressSuggestions } from '$lib/hooks/fetchAddressSuggestions.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
+	let { selectedAddress } = $props();
+
 	let address = $state('');
-	let selectedAddress = $state<string | null>(null);
+	// let selectedAddress = $state<string | null>(null);
 	let addressSuggestions = fetchAddressSuggestions(() => address);
 
 	const client = useQueryClient();

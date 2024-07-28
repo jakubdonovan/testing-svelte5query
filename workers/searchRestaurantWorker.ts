@@ -1,6 +1,10 @@
 import { chromium } from 'playwright';
+import type { Restaurant } from '$lib/types';
 
 export async function fetchRestaurantOutletsWorker(address: string, restaurantName: string) {
+	if (!address) throw new Error('Address is required.');
+	if (!restaurantName) throw new Error('Restaurant name is required.');
+
 	const browser = await chromium.launch({ headless: true });
 	const page = await browser.newPage();
 	try {
@@ -15,24 +19,15 @@ export async function fetchRestaurantOutletsWorker(address: string, restaurantNa
 		await page.waitForSelector('[data-testid="feed-desktop"]');
 
 		const restaurantData = await page.evaluate((restaurantName: string) => {
-			const data: {
-				name: string;
-				link: string;
-				img: string;
-				rating: string;
-				deliveryTime: string;
-				offers: string;
-			}[] = [];
+			const data: Restaurant[] = [];
 
 			const storeCards = Array.from(document.querySelectorAll('.ak.bu')).filter(
 				(card) => card.classList.length == 2
 			);
 
 			storeCards.forEach((card) => {
-				const content = card.textContent;
-
 				const linkEl = card.querySelector('a');
-				const href = linkEl?.getAttribute('href');
+				const href = linkEl?.getAttribute('href') || '';
 				if (!href || !href.toLowerCase().includes(restaurantName.toLowerCase())) return;
 
 				const nameEl = card.querySelector('a > h3');
@@ -42,17 +37,16 @@ export async function fetchRestaurantOutletsWorker(address: string, restaurantNa
 				const deliveryTimeEl = card.querySelector(
 					':scope > div > div:nth-child(2) > div:nth-child(2)'
 				);
-
-				const offers = card.querySelector(':scope > div > div:nth-child(1)').textContent;
-				const img = card.querySelector('picture > source').getAttribute('srcset');
+				const imgEl = card.querySelector('picture > source');
+				const offersEl = card.querySelector(':scope > div > div:nth-child(1)');
 
 				data.push({
-					name: nameEl ? nameEl.textContent : '',
-					img,
+					name: nameEl?.textContent ?? '',
+					img: imgEl?.getAttribute('srcset') ?? '',
 					link: linkEl ? 'https://ubereats.com' + href : '',
-					rating: ratingEl ? ratingEl?.textContent : '',
-					deliveryTime: deliveryTimeEl ? deliveryTimeEl?.textContent : '',
-					offers
+					rating: ratingEl?.textContent ?? '',
+					deliveryTime: deliveryTimeEl?.textContent ?? '',
+					offers: offersEl?.textContent ?? ''
 				});
 			});
 
@@ -60,6 +54,7 @@ export async function fetchRestaurantOutletsWorker(address: string, restaurantNa
 		}, restaurantName);
 		return restaurantData;
 	} catch (error) {
+		console.error('Error fetching restaurant outlets:', error);
 		throw error;
 	} finally {
 		await browser.close();
